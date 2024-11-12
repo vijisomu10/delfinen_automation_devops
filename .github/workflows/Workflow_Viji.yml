@@ -1,0 +1,21 @@
+# 1. Pipelinen ska bestå av individuella workflows, med tydliga namngivningar för workflows, jobs och steps.
+# 2. Användning av environment-variabler, GitHub-kontextvariabler och GitHub Secrets (t.ex., API-nycklar och Docker-credentials).
+# 3. Logik och beroenden (användning av needs och if-satser) ska användas i pipelinen.
+# 4. Pipelinen ska kunna triggas manuellt med workflow_dispatch och erbjuda en parameter för att logga fel:
+#   a. Om parametern är satt till true och testerna misslyckas, ska en logg-error artefakt genereras.
+#   b. Om parametern är satt till false, skapas ingen loggfil, oavsett testresultat.
+# 5. När alla tester är godkända ska pipelinen:
+#   a. Skapa en Docker-image av applikationen.
+#   b. Publicera Docker-imagen på DockerHub och koppla den till en Azure-app(med användning av Azure-credentials).
+
+
+name: CI/CD Pipeline
+
+# Trigger workflow manually
+on:
+  workflow_dispatch:
+    inputs:
+      log_error_on_fail:
+        description: 'Log error if tests fail'
+        required: true
+        type: boolean
