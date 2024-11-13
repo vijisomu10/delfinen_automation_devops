@@ -34,7 +34,7 @@ jobs:
 
     - name: Run unit tests
       run: |
-        pytest weatherdata_unit
+        pytest weatherdata_unit.py
 
   job_Itest:
     name: Integration Test Job
@@ -56,7 +56,7 @@ jobs:
 
     - name: Run integration tests
       run: |
-        pytest weatherdata_integration
+        pytest weatherdata_integration.py
 
      # Build Docker image
     - name: Build Docker Image
