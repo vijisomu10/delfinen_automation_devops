@@ -13,11 +13,6 @@ name: CI Pipeline
 on: 
   push
 
-env:
-  IMAGE_NAME: my-app
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
