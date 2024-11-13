@@ -17,6 +17,11 @@ jobs:
   job_Utest:
     name: Unit Test Job
     runs-on: ubuntu-latest
+    
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+      D_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      D_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
     - name: Checkout repository
@@ -34,7 +39,7 @@ jobs:
 
     - name: Run unit tests
       run: |
-        pytest testing/weatherdata_unit
+        pytest weatherdata_unit.py
 
   job_Itest:
     name: Integration Test Job
@@ -56,12 +61,17 @@ jobs:
 
     - name: Run integration tests
       run: |
-        pytest testing/weatherdata_integration
+        pytest weatherdata_integration.py
 
-     # Build Docker image
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      run: |
+        echo "$D_PASSWORD" | docker login -u "$D_USERNAME" --password-stdin
+
+    # Build Docker image
     - name: Build Docker Image
       run: |
-          docker build -t vijisomu10/test_dockerhub:latest .
+        docker build -t vijisomu10/test_dockerhub:latest .
 
     # Push Docker image to Docker Hub
     - name: Push Docker Image to Docker Hub
