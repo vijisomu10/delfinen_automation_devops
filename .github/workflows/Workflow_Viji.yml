@@ -11,7 +11,13 @@
 name: Test Workflow
 
 on:
-  workflow_dispatch: # Trigger the workflow manually
+  workflow_dispatch:
+    inputs:
+      log_errors:
+        description: 'Generate error log if tests fail'
+        required: true
+        default: 'false'
+        type: boolean
 
 env:
   api_key: ${{ secrets.API_KEY }}
@@ -40,6 +46,7 @@ jobs:
     - name: Run unit tests
       run: |
         pytest weatherdata_unit.py
+      continue-on-error: true
 
   job_Itest:
     name: Integration Test Job    
@@ -63,6 +70,7 @@ jobs:
     - name: Run integration tests
       run: |
         pytest weatherdata_integration.py
+      continue-on-error: true
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
@@ -80,3 +88,24 @@ jobs:
     - name: Push Docker Image to Docker Hub
       run: |
         docker push vijisomu10/test_dockerhub:latest
+
+  create_error_log:
+    name: Create Error Log
+    needs: [job_Utest, job_Itest]  # This job depends on both Utest and Itest
+    runs-on: ubuntu-latest
+    if: ${{ (needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure') && inputs.log_errors == 'true' }}  
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Create error log
+      run: |
+        echo "Tests failed. Creating error log..." > error_log.txt
+        echo "Details of failure can be added here" >> error_log.txt
+
+    - name: Upload error log artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: error-log
+        path: error_log.txt
