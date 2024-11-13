@@ -50,7 +50,7 @@ class TestWeatherData(unittest.TestCase):
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
-            'hourly': [{'dt': 1609459200 + i * 3600, 'temp': float(10 + i)} for i in range(24)]
+            'hourly': [{'dt': 1609459200 + i * 3600, 'temp': float(10 + i)} for i in range(25)]
         }
         mock_get.return_value = mock_response
 
