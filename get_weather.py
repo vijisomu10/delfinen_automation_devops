@@ -38,3 +38,16 @@ class WeatherData:
         else:
             print('Could not get weather data. Status code:', weather.status_code)
             return None
+        
+    def check_api_connection(self):
+        # Make a minimal request to validate connection
+        params = {
+            "lat": self.lat,
+            "lon": self.lon,
+            "appid": self.api_key,
+            "exclude": "minutely,hourly,daily,alerts"
+        }
+        response = requests.get(self.url, params=params)
+        
+        # Return the status code of the response
+        return response.status_code

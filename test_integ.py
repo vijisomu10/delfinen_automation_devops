@@ -1,11 +1,3 @@
-"""
-4.	Integrationstest som verifierar att API fungerar korrekt.
-Integration tests will use actual API calls, 
-so you’ll need a valid API key for OpenWeatherMap and internet connectivity.
-
-Run: python -m unittest weatherdata_integration.py
- """
-
 import unittest
 import os
 from dotenv import load_dotenv
@@ -21,7 +13,7 @@ class IntegrationTestWeatherDataAPIConnection(unittest.TestCase):
 
     def test_api_connection_success(self):
         # Test to ensure API connection is successful
-        response_status = self.weather.check_api_connection()
+        response_status = self.weather.check_api_connection()  # Hypothetical method for status code check
 
         # Assert that the response status code is 200 (OK)
         self.assertEqual(response_status, 200)
