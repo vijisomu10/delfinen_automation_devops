@@ -1,8 +1,11 @@
-""" 
+"""
+From Project Description
+5.	Unit-test som säkerställer att databehandlingen ger förväntat resultat.
+5.  Unit tests that ensure that data processing produces expected results.
+
 Unit Testing:
 We’ll use mocking to simulate responses from the OpenWeatherMap API 
 so that our tests are faster and don’t rely on network connectivity.
-
 Explanation:
 Mocking with patch: 
 We use @patch('requests.get') to replace requests.get with a mock object, simulating API responses.
@@ -12,8 +15,8 @@ In test_get_current_temp,
 In test_get_temp_next_24h, 
     we verify that the function returns 24 temperature entries for the next 24 hours, 
     with each entry formatted as a list containing a timestamp and temperature. 
-    
-Run Unit Test in bash as:  python -m testing.weatherdata_unit.py
+
+Run Unit Test in bash as:  python -m unittest testing.weatherdata_unit.py
 """
 
 import unittest
