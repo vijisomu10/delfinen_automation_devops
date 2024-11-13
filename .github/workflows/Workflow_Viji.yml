@@ -9,13 +9,89 @@
 #   b. Publicera Docker-imagen på DockerHub och koppla den till en Azure-app(med användning av Azure-credentials).
 
 
-name: CI/CD Pipeline
+name: CI Pipeline
 
-# Trigger workflow manually
 on:
   workflow_dispatch:
     inputs:
-      log_error_on_fail:
-        description: 'Log error if tests fail'
+      log_errors:
+        description: "Enable error logging if tests fail"
         required: true
-        type: boolean
+        default: "false"
+
+env:
+  IMAGE_NAME: my-app
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+  job_Utest:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run Unit Tests
+        run: |
+          python -m unittest discover -s tests/unit
+        continue-on-error: true
+
+      - name: Upload Unit Test Error Logs
+        if: ${{ failure() && github.event.inputs.log_errors == 'true' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit-test-error-logs
+          path: unit_test_logs/
+
+  job_Itest:
+    needs: job_Utest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run Integration Tests
+        run: |
+          python -m unittest discover -s tests/integration
+        continue-on-error: true
+
+      - name: Upload Integration Test Error Logs
+        if: ${{ failure() && github.event.inputs.log_errors == 'true' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: integration-test-error-logs
+          path: integration_test_logs/
+
+  build-image:
+    needs: job_Itest
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to DockerHub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ env.IMAGE_NAME }} .
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ env.IMAGE_NAME }}
+
