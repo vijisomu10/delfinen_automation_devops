@@ -1,0 +1,24 @@
+# Ignore Git directories and files
+.git
+.gitignore
+
+# Ignore Python bytecode
+*.pyc
+*.pyo
+__pycache__
+
+# Ignore environment files
+.env
+
+# Ignore Node.js dependencies and build artifacts
+node_modules/
+dist/
+*.log
+
+# Ignore IDE config files
+.vscode/
+.idea/
+
+# Ignore build output or temporary files
+*.bak
+*.swp
