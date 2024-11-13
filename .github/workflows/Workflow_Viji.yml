@@ -30,6 +30,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
+        pip install pytest
 
     - name: Run unit tests
       run: |
@@ -51,6 +52,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
+        pip install pytest
 
     - name: Run integration tests
       run: |
