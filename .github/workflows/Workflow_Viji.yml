@@ -42,7 +42,8 @@ jobs:
         pytest weatherdata_unit.py
 
   job_Itest:
-    name: Integration Test Job
+    name: Integration Test Job    
+    needs: job_Utest   # Run only if job_Utest passes
     runs-on: ubuntu-latest
 
     steps:
@@ -65,11 +66,13 @@ jobs:
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
+      if: SUCCESS()
       run: |
         echo "$D_PASSWORD" | docker login -u "$D_USERNAME" --password-stdin
 
     # Build Docker image
     - name: Build Docker Image
+      if: SUCCESS()
       run: |
         docker build -t vijisomu10/test_dockerhub:latest .
 
