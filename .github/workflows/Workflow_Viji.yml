@@ -14,7 +14,7 @@ on:
   workflow_dispatch: # Trigger the workflow manually
 
 env:
-  API_KEY: ${{ secrets.API_KEY }}
+  api_key: ${{ secrets.API_KEY }}
   D_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   D_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -44,10 +44,6 @@ jobs:
   job_Itest:
     name: Integration Test Job
     runs-on: ubuntu-latest
-
-    env:
-      API_KEY: ${{ secrets.API_KEY }}
-      api_key: ${{ secrets.API_KEY }}
 
     steps:
     - name: Checkout repository
