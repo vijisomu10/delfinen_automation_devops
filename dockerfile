@@ -22,12 +22,14 @@ FROM python:3.10-slim
 
 # Install Streamlit
 RUN pip install streamlit
+RUN pip install -r requirements.txt
+
 
 # Set the working directory
 WORKDIR /app
 
 # Copy the Streamlit app file into the container
-COPY . /app
+COPY . .
 
 # Expose the port Streamlit uses (8501 by default)
 EXPOSE 8501
