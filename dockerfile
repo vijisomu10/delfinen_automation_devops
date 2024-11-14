@@ -22,8 +22,6 @@ FROM python:3.10-slim
 
 # Install Streamlit
 RUN pip install streamlit
-RUN pip install -r requirements.txt
-
 
 # Set the working directory
 WORKDIR /app
