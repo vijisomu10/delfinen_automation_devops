@@ -27,7 +27,7 @@ RUN pip install streamlit
 WORKDIR /app
 
 # Copy the Streamlit app file into the container
-COPY streamlit_app.py /app/
+COPY . /app
 
 # Expose the port Streamlit uses (8501 by default)
 EXPOSE 8501
