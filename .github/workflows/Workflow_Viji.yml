@@ -8,7 +8,7 @@
 #   a. Skapa en Docker-image av applikationen.
 #   b. Publicera Docker-imagen på DockerHub och koppla den till en Azure-app(med användning av Azure-credentials).
 
-name: Test Workflow
+name: CI/CD Pipeline for Open Weather Map
 
 on:
   workflow_dispatch:
@@ -25,6 +25,7 @@ env:
   D_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
+  # Unit Test
   job_Utest:
     name: Unit Test Job
     runs-on: ubuntu-latest
@@ -47,7 +48,7 @@ jobs:
       run: |
         pytest weatherdata_unit.py
       continue-on-error: true
-
+  # Integration Test
   job_Itest:
     name: Integration Test Job    
     needs: job_Utest   # Run only if job_Utest passes
