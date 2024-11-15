@@ -9,6 +9,6 @@ def get_position_from_map():
     if map_data.get('last_clicked') is not None:
         return map_data['last_clicked']['lat'], map_data['last_clicked']['lng']
     
-if __name__ == "__main__":
-    get_position_from_map()
+#if __name__ == "__main__":
+get_position_from_map()
 
