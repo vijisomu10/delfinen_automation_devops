@@ -47,7 +47,8 @@ jobs:
     - name: Run unit tests
       run: |
         pytest weatherdata_unit.py
-      continue-on-error: true
+      # continue-on-error: true
+      
   # Integration Test
   job_Itest:
     name: Integration Test Job    
@@ -69,7 +70,7 @@ jobs:
     - name: Run integration tests
       run: |
         pytest weatherdata_integration.py
-      continue-on-error: true
+      #continue-on-error: true
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
@@ -92,7 +93,7 @@ jobs:
     name: Create Error Log
     needs: [job_Utest, job_Itest]  # This job depends on both Utest and Itest
     runs-on: ubuntu-latest
-    if: ${{ needs.job_Utest.result == 'Failure' || needs.job_Itest.result == 'Failure'}} && ${{inputs.log_errors == 'true' }}  
+    if: ${{ needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure'}} && ${{inputs.log_errors == 'true' }}  
 
     steps:
     - name: Create error log
@@ -104,4 +105,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: error-log
-        path: error_log.txt
+        path: |
+          error_log.txt
