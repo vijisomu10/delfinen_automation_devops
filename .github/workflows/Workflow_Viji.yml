@@ -80,6 +80,7 @@ jobs:
 
     - name: Upload error log artifact
       uses: actions/upload-artifact@v3
+      if: ${{ github.event.inputs.logErrors == 'true' }}
       with:
         name: error-log
         path: |
