@@ -55,9 +55,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -97,9 +94,6 @@ jobs:
     if: ${{ (needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure') && inputs.log_errors == 'true' }}  
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
     - name: Create error log
       run: |
         echo "Tests failed. Creating error log..." > error_log.txt
