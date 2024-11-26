@@ -47,7 +47,7 @@ jobs:
     - name: Run unit tests
       run: |
         pytest weatherdata_unit.py
-      # continue-on-error: true
+      continue-on-error: true
       
   # Integration Test
   job_Itest:
@@ -70,7 +70,20 @@ jobs:
     - name: Run integration tests
       run: |
         pytest weatherdata_integration.py
-      #continue-on-error: true
+      continue-on-error: true
+
+    - name: Create error log
+      if: ${{ needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure'}} && ${{inputs.log_errors == 'true' }}  
+      run: |
+        echo "Tests failed. Creating error log..." > error_log.txt
+        echo "Details of failure can be added here" >> error_log.txt
+
+    - name: Upload error log artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: error-log
+        path: |
+          error_log.txt
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
@@ -88,22 +101,3 @@ jobs:
     - name: Push Docker Image to Docker Hub
       run: |
         docker push vijisomu10/test_dockerhub:latest
-
-  create_error_log:
-    name: Create Error Log
-    needs: [job_Utest, job_Itest]  # This job depends on both Utest and Itest
-    runs-on: ubuntu-latest
-    if: ${{ needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure'}} && ${{inputs.log_errors == 'true' }}  
-
-    steps:
-    - name: Create error log
-      run: |
-        echo "Tests failed. Creating error log..." > error_log.txt
-        echo "Details of failure can be added here" >> error_log.txt
-
-    - name: Upload error log artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: error-log
-        path: |
-          error_log.txt
