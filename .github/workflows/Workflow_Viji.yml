@@ -91,7 +91,7 @@ jobs:
     name: Create Error Log
     needs: [job_Utest, job_Itest]  # This job depends on both Utest and Itest
     runs-on: ubuntu-latest
-    if: ${{ (needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure') && inputs.log_errors == 'true' }}  
+    if: ${{ (needs.job_Utest.result == 'Failure' || needs.job_Itest.result == 'Failure') && inputs.log_errors == 'true' }}  
 
     steps:
     - name: Create error log
