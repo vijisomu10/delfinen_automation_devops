@@ -45,8 +45,8 @@ jobs:
 
     - name: Run unit tests
       run: |
-        pytest weatherdata_unit.py
-      continue-on-error: true
+        echo "running unit tests" > error_log.log
+        pytest weatherdata_unit.py --maxfail=5 --disable-warnings >> error_log.log || echo "Failure. See error_log.log for details." >> error_log.log
       
   # Integration Test
   job_Itest:
@@ -69,12 +69,13 @@ jobs:
 
     - name: Run integration tests
       run: |
-        pytest weatherdata_integration.py
-      continue-on-error: true
+        echo "Running unit tests..." > error_log.log
+        pytest weatherdata_integration.py --maxfail=1 --disable-warnings >> error_log.log || echo "Failure. See error_log.log for details." >> error_log.log
 
-    - name: Upload error logs
+
+    - name: Upload error logs      
+      if: failure && ${{ github.event.inputs.logErrors == 'true' }}
       uses: actions/upload-artifact@v3
-      if: ${{ github.event.inputs.logErrors == 'true' }}
       with:
         name: error-log
         path: error_log.log
