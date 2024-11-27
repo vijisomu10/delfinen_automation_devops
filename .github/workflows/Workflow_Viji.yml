@@ -71,41 +71,31 @@ jobs:
       run: |
         pytest weatherdata_integration.py
       continue-on-error: true
-      
-    # Log in to Docker Hub
-    - name: Log in to Docker Hub
-      if: SUCCESS()
-      run: |
-        echo "$D_PASSWORD" | docker login -u "$D_USERNAME" --password-stdin
 
-    # Build Docker image
-    - name: Build Docker Image
-      if: SUCCESS()
-      run: |
-        docker build -t vijisomu10/test_dockerhub:latest .
-
-    # Push Docker image to Docker Hub
-    - name: Push Docker Image to Docker Hub
-      run: |
-        docker push vijisomu10/test_dockerhub:latest
-
-  error_log:
-    name: Create Error Log
-    needs: [job_Utest, job_Itest]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: errors
-      if: ${{ needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure'}} && ${{ github.event.inputs.log_errors == 'true' }}  
-      run: |
-        echo "Tests failed. Creating error log" > error_log.log
-        exit 1
-
-    - name: Upload error log artifact
+    - name: Upload error logs
       uses: actions/upload-artifact@v3
       if: ${{ github.event.inputs.logErrors == 'true' }}
       with:
         name: error-log
         path: error_log.log
+
+  build_docker:
+    runs-on: ubuntu-latest
+    needs: job_Itest
+    steps:
+      - uses: actions/checkout@v4
+  
+      - name: Log in to Docker Hub
+        if: SUCCESS()
+        run: |
+          echo "$D_PASSWORD" | docker login -u "$D_USERNAME" --password-stdin
+  
+      # Build Docker image
+      - name: Build Docker Image
+        if: SUCCESS()
+        run: |
+          docker build -t vijisomu10/test_dockerhub:latest .
+  
+      - name: Push Docker Image to Docker Hub
+        run: |
+          docker push vijisomu10/test_dockerhub:latest
