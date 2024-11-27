@@ -27,12 +27,11 @@ env:
 jobs:
   # Unit Test
   job_Utest:
-    name: Unit Test Job
+    
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -51,11 +50,12 @@ jobs:
       
   # Integration Test
   job_Itest:
-    name: Integration Test Job    
+    
     needs: job_Utest   # Run only if job_Utest passes
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v4
       
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -71,21 +71,7 @@ jobs:
       run: |
         pytest weatherdata_integration.py
       continue-on-error: true
-
-    - name: Create error log
-      if: ${{ needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure'}} && ${{inputs.log_errors == 'true' }}  
-      run: |
-        echo "Tests failed. Creating error log..." > error_log.txt
-        echo "Details of failure can be added here" >> error_log.txt
-
-    - name: Upload error log artifact
-      uses: actions/upload-artifact@v3
-      if: ${{ github.event.inputs.logErrors == 'true' }}
-      with:
-        name: error-log
-        path: |
-          error_log.txt
-
+      
     # Log in to Docker Hub
     - name: Log in to Docker Hub
       if: SUCCESS()
@@ -102,3 +88,22 @@ jobs:
     - name: Push Docker Image to Docker Hub
       run: |
         docker push vijisomu10/test_dockerhub:latest
+
+  error_log:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: errors
+      if: ${{ needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure'}} && ${{ github.event.inputs.log_errors == 'true' }}  
+      run: |
+        echo "Tests failed. Creating error log" > error.log
+        exit 1
+
+    - name: Upload error log artifact
+      uses: actions/upload-artifact@v3
+      if: ${{ github.event.inputs.logErrors == 'true' }}
+      with:
+        name: error-log
+        path: error_log.log
