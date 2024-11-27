@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    #- uses: actions/checkout@v4
       
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -100,7 +100,7 @@ jobs:
     - name: errors
       if: ${{ needs.job_Utest.result == 'failure' || needs.job_Itest.result == 'failure'}} && ${{ github.event.inputs.log_errors == 'true' }}  
       run: |
-        echo "Tests failed. Creating error log" > error.log
+        echo "Tests failed. Creating error log" > error_log.log
         exit 1
 
     - name: Upload error log artifact
