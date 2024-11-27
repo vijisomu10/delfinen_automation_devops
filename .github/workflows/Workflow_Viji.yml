@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    #- uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -69,7 +69,7 @@ jobs:
 
     - name: Run integration tests
       run: |
-        echo "Running unit tests..." > error_log.log
+        echo "Running" > error_log.log
         pytest weatherdata_integration.py --maxfail=1 --disable-warnings >> error_log.log || echo "Failure. See error_log.log for details." >> error_log.log
 
 
