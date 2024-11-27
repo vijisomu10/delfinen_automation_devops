@@ -46,12 +46,12 @@ jobs:
     - name: Run unit tests
       run: |
         echo "running unit tests" > error_log.log
-        pytest weatherdata_unit.py --maxfail=5 --disable-warnings >> error_log.log || echo "Failure. See error_log.log for details." >> error_log.log
+        pytest weatherdata_unit.py --maxfail=1 --disable-warnings >> error_log.log || echo "FAILURE" >> error_log.log
       
   # Integration Test
   job_Itest:
     
-    needs: job_Utest   # Run only if job_Utest passes
+    needs: job_Utest   # Run only if job_Utest pass
     runs-on: ubuntu-latest
 
     steps:
@@ -70,7 +70,7 @@ jobs:
     - name: Run integration tests
       run: |
         echo "Running" > error_log.log
-        pytest weatherdata_integration.py --maxfail=1 --disable-warnings >> error_log.log || echo "Failure. See error_log.log for details." >> error_log.log
+        pytest weatherdata_integration.py --maxfail=1 --disable-warnings >> error_log.log || echo "FAILURE" >> error_log.log
 
 
     - name: Upload error logs      
@@ -80,7 +80,7 @@ jobs:
         name: error-log
         path: error_log.log
 
-  build_docker:
+  build_dockerImage:
     runs-on: ubuntu-latest
     needs: job_Itest
     steps:
@@ -91,7 +91,6 @@ jobs:
         run: |
           echo "$D_PASSWORD" | docker login -u "$D_USERNAME" --password-stdin
   
-      # Build Docker image
       - name: Build Docker Image
         if: SUCCESS()
         run: |
