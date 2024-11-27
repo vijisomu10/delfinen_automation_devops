@@ -90,6 +90,8 @@ jobs:
         docker push vijisomu10/test_dockerhub:latest
 
   error_log:
+    name: Create Error Log
+    needs: [job_Utest, job_Itest]
     runs-on: ubuntu-latest
 
     steps:
