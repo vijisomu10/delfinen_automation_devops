@@ -29,7 +29,6 @@ jobs:
   job_Utest:
     
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
 
@@ -72,10 +71,9 @@ jobs:
         echo "Running" > error_log.log
         pytest weatherdata_integration.py --maxfail=1 --disable-warnings >> error_log.log || echo "FAILURE" >> error_log.log
 
-
     - name: Upload error logs      
       if: failure && ${{ github.event.inputs.logErrors == 'true' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: error-log
         path: error_log.log
